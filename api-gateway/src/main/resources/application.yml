@@ -1,0 +1,54 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      default-filters:
+        - PreserveHostHeader
+      globalcors:
+        add-to-simple-url-handler-mapping: true
+        corsConfigurations:
+          '[/**]':
+            allowedOriginPatterns:
+              - "http://localhost:*"
+              - "http://127.0.0.1:*"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - PATCH
+              - DELETE
+              - OPTIONS
+            allowedHeaders: "*"
+            allowCredentials: true
+            maxAge: 3600
+      routes:
+        - id: auth-service
+          uri: http://localhost:8081
+          predicates:
+            - Path=/auth/**,/users/**
+        - id: tour-service
+          uri: http://localhost:8082
+          predicates:
+            - Path=/destinations/**,/tours/**,/schedules/**
+        - id: booking-service
+          uri: http://localhost:8083
+          predicates:
+            - Path=/bookings/**,/admin/bookings/**,/payments/**,/invoices/**
+        - id: notification-service
+          uri: http://localhost:8084
+          predicates:
+            - Path=/notifications/**
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+app:
+  jwt:
+    secret: "change-this-secret-key-change-this-secret-key-123456"

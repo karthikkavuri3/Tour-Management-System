@@ -1,0 +1,44 @@
+server:
+  port: 8084
+
+spring:
+  application:
+    name: notification-service
+  profiles:
+    active: local   # loads application-local.yml automatically
+  datasource:
+    url: jdbc:mysql://localhost:3306/tour_notification_db
+    username: root
+    password: 1234
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
+  mail:
+    # ── Set MAIL_USERNAME and MAIL_PASSWORD as environment variables ──────
+    # For Gmail: enable 2FA → Google Account → Security → App Passwords → generate one
+    # Then run: export MAIL_USERNAME=you@gmail.com MAIL_PASSWORD=xxxx-xxxx-xxxx-xxxx
+    host: ${MAIL_HOST:smtp.gmail.com}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USERNAME:}
+    password: ${MAIL_PASSWORD:}
+    default-encoding: UTF-8
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
+
+# Sender display name shown in the From field
+app:
+  mail:
+    from-name: "Wanderlust Tours"
+    from-address: ${MAIL_USERNAME:noreply@wanderlust.tours}

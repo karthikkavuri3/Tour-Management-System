@@ -1,0 +1,26 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: auth-service
+  datasource:
+    url: jdbc:mysql://localhost:3306/tour_auth_db
+    username: root
+    password: 1234
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+app:
+  jwt:
+    secret: "change-this-secret-key-change-this-secret-key-123456"
+    expiration-ms: 86400000
+  notification:
+    base-url: http://localhost:8084
+  password-reset:
+    code-expiry-minutes: 10

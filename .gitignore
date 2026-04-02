@@ -1,0 +1,11 @@
+**/target/
+**/.idea/
+**/*.iml
+**/node_modules/
+frontend/build/
+.DS_Store
+.cursor/
+
+# Local credential overrides — never commit these
+**/application-local.yml
+**/.env
