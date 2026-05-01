@@ -2,6 +2,8 @@
 
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { DayPicker } from "react-day-picker";
+import "react-day-picker/dist/style.css";
 import type { AxiosError } from "axios";
 import { Badge } from "@/ui/components/Badge";
 import { Button } from "@/ui/components/Button";
@@ -120,6 +122,21 @@ const buildItineraryByDuration = (durationDays: number): { title: string; detail
     },
   ];
 };
+
+function isoDate(d: Date) {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+
+function parseLocal(s: string | undefined): Date | undefined {
+  return s ? new Date(s + "T00:00:00") : undefined;
+}
+
+function fmtDate(s: string) {
+  return new Date(s + "T00:00:00").toLocaleDateString("en-US", { day: "numeric", month: "short", year: "numeric" });
+}
 
 const syncItineraryWithDuration = (
   current: { title: string; details: string }[],
@@ -504,7 +521,7 @@ export default function AdminDashboardPage({ session, onLogout }: Props) {
     setFormLoading(true); setFormError("");
     // Auto-generate a destination-relevant image when none is provided
     const resolvedImageUrl = form.imageUrl.trim() ||
-      tourImageUrl(form.title, tours.find((t) => t.id === Number(form.destinationId))?.destinationName ?? form.title, "1200x800");
+      tourImageUrl(form.title, form.title, "1200x800");
     const itineraryHighlights = form.itineraryHighlights
       .map((i) => ({ title: i.title.trim(), details: i.details.trim() }))
       .filter((i) => i.title);
@@ -544,7 +561,10 @@ export default function AdminDashboardPage({ session, onLogout }: Props) {
       const next: TourForm = { ...prev, [field]: e.target.value };
       if (field === "durationDays") {
         const days = Math.max(1, Number(e.target.value || 1));
-        next.itineraryHighlights = syncItineraryWithDuration(prev.itineraryHighlights, days);
+        next.itineraryHighlights =
+          tourModal === "create"
+            ? buildItineraryByDuration(days)
+            : syncItineraryWithDuration(prev.itineraryHighlights, days);
       }
       return next;
     });
@@ -601,7 +621,7 @@ export default function AdminDashboardPage({ session, onLogout }: Props) {
               >
                 <img
                   className="h-64 w-full flex-none object-cover"
-                  src={tour.imageUrl || tourImageUrl(tour.title, tour.destinationName, "800x600")}
+                  src={tour.imageUrl || tourImageUrl(tour.title, tour.title, "800x600")}
                   alt={tour.title}
                 />
                 <div className="flex w-full flex-col items-start gap-4 px-6 py-6">
@@ -612,7 +632,7 @@ export default function AdminDashboardPage({ session, onLogout }: Props) {
                     </div>
                     <div className="flex items-center gap-2">
                       <FeatherMapPin className="text-body font-body text-subtext-color" />
-                      <span className="text-body font-body text-subtext-color">{tour.destinationName}</span>
+                      <span className="text-body font-body text-subtext-color">{tour.title}</span>
                     </div>
                   </div>
                   <div className="flex items-center gap-1">
@@ -751,7 +771,7 @@ export default function AdminDashboardPage({ session, onLogout }: Props) {
             >
               <img
                 className="h-64 w-full flex-none object-cover"
-                src={tour.imageUrl || tourImageUrl(tour.title, tour.destinationName, "800x600")}
+                src={tour.imageUrl || tourImageUrl(tour.title, tour.title, "800x600")}
                 alt={tour.title}
               />
               <div className="flex w-full flex-col items-start gap-4 px-6 py-6">
@@ -762,7 +782,7 @@ export default function AdminDashboardPage({ session, onLogout }: Props) {
                   </div>
                   <div className="flex items-center gap-2">
                     <FeatherMapPin className="text-body font-body text-subtext-color" />
-                    <span className="text-body font-body text-subtext-color">{tour.destinationName}</span>
+                    <span className="text-body font-body text-subtext-color">{tour.title}</span>
                   </div>
                 </div>
                 <div className="flex items-center gap-1">
@@ -1083,30 +1103,62 @@ export default function AdminDashboardPage({ session, onLogout }: Props) {
           </div>
 
           {/* Booking window */}
-          <div className="flex w-full flex-col items-start gap-2 rounded-lg border border-solid border-brand-200 bg-brand-50 px-4 py-4">
-            <span className="text-body-bold font-body-bold text-default-font">Booking Window</span>
-            <span className="text-caption font-caption text-subtext-color">
-              Customers can pick any start date within this range. Leave blank to disable booking.
+          <div className="flex w-full flex-col gap-4 rounded-2xl border border-solid border-neutral-border bg-neutral-50 px-5 py-5">
+            <div className="flex items-center gap-2">
+              <FeatherCalendar className="text-body font-body text-brand-600" />
+              <span className="text-heading-3 font-heading-3 text-default-font">Booking Window</span>
+            </div>
+            <span className="text-body font-body text-subtext-color -mt-2">
+              Customers can pick any travel start date within this window.
             </span>
-            <div className="flex w-full items-start gap-4 mt-2">
-              <div className="flex grow flex-col gap-1">
-                <span className="text-caption-bold font-caption-bold text-subtext-color">Opens (start_date)</span>
-                <input
-                  type="date"
-                  className="w-full rounded-lg border border-solid border-neutral-border bg-neutral-0 px-4 py-2.5 text-body font-body text-default-font focus:outline-none focus:border-brand-600"
-                  value={form.startDate}
-                  onChange={set("startDate")}
-                />
+
+            <div className="grid w-full grid-cols-2 gap-5 mobile:grid-cols-1">
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-body-bold font-body-bold text-subtext-color">Booking Opens</span>
+                  {form.startDate && (
+                    <span className="text-caption-bold font-caption-bold text-brand-600">{fmtDate(form.startDate)}</span>
+                  )}
+                </div>
+                <div className="flex justify-center rounded-xl border border-solid border-neutral-border bg-default-background py-2 rdp-custom rdp-compact">
+                  <DayPicker
+                    mode="single"
+                    selected={parseLocal(form.startDate)}
+                    defaultMonth={parseLocal(form.startDate) ?? new Date()}
+                    onSelect={(day) => {
+                      if (!day) return;
+                      const iso = isoDate(day);
+                      setForm((prev) => ({
+                        ...prev,
+                        startDate: iso,
+                        endDate: prev.endDate && prev.endDate < iso ? iso : prev.endDate,
+                      }));
+                    }}
+                    showOutsideDays={false}
+                  />
+                </div>
               </div>
-              <div className="flex grow flex-col gap-1">
-                <span className="text-caption-bold font-caption-bold text-subtext-color">Closes (end_date)</span>
-                <input
-                  type="date"
-                  className="w-full rounded-lg border border-solid border-neutral-border bg-neutral-0 px-4 py-2.5 text-body font-body text-default-font focus:outline-none focus:border-brand-600"
-                  value={form.endDate}
-                  min={form.startDate || undefined}
-                  onChange={set("endDate")}
-                />
+
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-body-bold font-body-bold text-subtext-color">Booking Closes</span>
+                  {form.endDate && (
+                    <span className="text-caption-bold font-caption-bold text-brand-600">{fmtDate(form.endDate)}</span>
+                  )}
+                </div>
+                <div className="flex justify-center rounded-xl border border-solid border-neutral-border bg-default-background py-2 rdp-custom rdp-compact">
+                  <DayPicker
+                    mode="single"
+                    selected={parseLocal(form.endDate)}
+                    defaultMonth={parseLocal(form.endDate) ?? parseLocal(form.startDate) ?? new Date()}
+                    disabled={form.startDate ? [{ before: new Date(form.startDate + "T00:00:00") }] : []}
+                    onSelect={(day) => {
+                      if (!day) return;
+                      setForm((prev) => ({ ...prev, endDate: isoDate(day) }));
+                    }}
+                    showOutsideDays={false}
+                  />
+                </div>
               </div>
             </div>
           </div>

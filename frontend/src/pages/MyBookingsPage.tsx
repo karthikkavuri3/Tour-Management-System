@@ -308,7 +308,7 @@ export default function MyBookingsPage({ session, onLogout }: Props) {
                     {/* Image — same height as Explore Tours */}
                     <img
                       className="h-64 w-full flex-none object-cover"
-                      src={tour?.imageUrl || tourImageUrl(tour?.title, tour?.destinationName, "600x400")}
+                      src={tour?.imageUrl || tourImageUrl(tour?.title, tour?.title, "600x400")}
                       alt={tour?.title ?? "Tour"}
                     />
 
@@ -323,10 +323,10 @@ export default function MyBookingsPage({ session, onLogout }: Props) {
                           </span>
                           {statusBadge(b)}
                         </div>
-                        {tour?.destinationName && (
+                        {tour?.title && (
                           <div className="flex items-center gap-2">
                             <FeatherMapPin className="text-body font-body text-subtext-color" />
-                            <span className="text-body font-body text-subtext-color">{tour.destinationName}</span>
+                            <span className="text-body font-body text-subtext-color">{tour.title}</span>
                           </div>
                         )}
                         <span className="text-caption font-caption text-subtext-color">Ref: {b.bookingReference}</span>

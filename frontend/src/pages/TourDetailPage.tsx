@@ -211,7 +211,7 @@ export default function TourDetailPage({ session, onLogout }: Props) {
     }
     setSaving(true); setFormError("");
     const resolvedImageUrl = form.imageUrl.trim() ||
-      tourImageUrl(form.title, tour?.destinationName ?? form.title, "1200x800");
+      tourImageUrl(form.title, form.title, "1200x800");
     try {
       const itineraryHighlights = form.itineraryHighlights
         .map((i) => ({ title: i.title.trim(), details: i.details.trim() }))
@@ -305,7 +305,7 @@ export default function TourDetailPage({ session, onLogout }: Props) {
         <div className="relative w-full h-56 bg-neutral-100">
           <img
             className="h-full w-full object-cover"
-            src={form.imageUrl.trim() || tourImageUrl(form.title || tour.title, tour.destinationName, "1200x500")}
+            src={form.imageUrl.trim() || tourImageUrl(form.title || tour.title, form.title || tour.title, "1200x500")}
             alt="Tour preview"
             onError={(e) => { (e.target as HTMLImageElement).src = tourImageUrl("", "", "1200x500"); }}
           />
@@ -566,7 +566,7 @@ export default function TourDetailPage({ session, onLogout }: Props) {
                 <div className="flex h-96 w-full flex-none overflow-hidden rounded-xl bg-neutral-100">
                   <img
                     className="min-h-[0px] w-full object-cover"
-                    src={tour.imageUrl || tourImageUrl(tour.title, tour.destinationName, "1200x800")}
+                    src={tour.imageUrl || tourImageUrl(tour.title, tour.title, "1200x800")}
                     alt={tour.title}
                   />
                 </div>
@@ -577,7 +577,7 @@ export default function TourDetailPage({ session, onLogout }: Props) {
                   <div className="flex w-full flex-wrap items-center gap-6">
                     <div className="flex items-center gap-2">
                       <FeatherMapPin className="text-heading-2 font-heading-2 text-subtext-color" />
-                      <span className="text-heading-2 font-heading-2 text-default-font">{tour.destinationName}</span>
+                      <span className="text-heading-2 font-heading-2 text-default-font">{tour.title}</span>
                     </div>
                     <div className="flex items-center gap-2">
                       <FeatherClock className="text-heading-2 font-heading-2 text-subtext-color" />

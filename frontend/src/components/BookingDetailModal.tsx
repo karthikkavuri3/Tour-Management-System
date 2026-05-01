@@ -107,7 +107,7 @@ export default function BookingDetailModal({
 
   const canModify = allowEdit && (localBooking.bookingStatus === "CONFIRMED" || localBooking.bookingStatus === "PENDING");
   const canMarkCompleted = allowMarkCompleted && localBooking.bookingStatus === "CONFIRMED";
-  const heroImage = tour?.imageUrl || tourImageUrl(tour?.title, tour?.destinationName, "1200x500");
+  const heroImage = tour?.imageUrl || tourImageUrl(tour?.title, tour?.title, "1200x500");
   const notificationEmail = customerEmailOverride ?? session.email;
   const notificationName = customerNameOverride ?? session.fullName;
 
@@ -346,7 +346,7 @@ export default function BookingDetailModal({
                 {tour && (
                   <>
                     <FeatherMapPin className="text-caption font-caption text-neutral-300 flex-none" />
-                    <span className="text-caption font-caption text-neutral-300 truncate">{tour.destinationName}</span>
+                    <span className="text-caption font-caption text-neutral-300 truncate">{tour.title}</span>
                   </>
                 )}
                 <StatusBadge booking={localBooking} />

@@ -72,3 +72,21 @@ body {
   color: #60a5fa;
   font-weight: 700;
 }
+
+/* Compact sizing for tighter calendar containers (admin create/edit modal). */
+.rdp-compact .rdp {
+  --rdp-day-width: 2rem;
+  --rdp-day-height: 2rem;
+  --rdp-nav_button-width: 1.75rem;
+  --rdp-nav_button-height: 1.75rem;
+}
+.rdp-compact .rdp-caption_label {
+  font-size: 0.82rem;
+  margin-left: 1.2rem;
+}
+.rdp-compact .rdp-head_cell {
+  font-size: 0.68rem;
+}
+.rdp-compact .rdp-day {
+  font-size: 0.8rem;
+}

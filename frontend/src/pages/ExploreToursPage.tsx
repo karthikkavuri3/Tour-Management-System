@@ -194,7 +194,7 @@ export default function ExploreToursPage({ session, onLogout }: Props) {
             >
               <img
                 className="h-64 w-full flex-none object-cover"
-                src={tour.imageUrl || tourImageUrl(tour.title, tour.destinationName, "800x600")}
+                src={tour.imageUrl || tourImageUrl(tour.title, tour.title, "800x600")}
                 alt={tour.title}
               />
               <div className="flex w-full flex-col items-start gap-4 px-6 py-6">
@@ -205,7 +205,7 @@ export default function ExploreToursPage({ session, onLogout }: Props) {
                   </div>
                   <div className="flex items-center gap-2">
                     <FeatherMapPin className="text-body font-body text-subtext-color" />
-                    <span className="text-body font-body text-subtext-color">{tour.destinationName}</span>
+                    <span className="text-body font-body text-subtext-color">{tour.title}</span>
                   </div>
                 </div>
                 <div className="flex items-center gap-1">

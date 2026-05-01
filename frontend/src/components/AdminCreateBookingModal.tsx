@@ -332,13 +332,13 @@ export default function AdminCreateBookingModal({ users, tours, onClose, onCreat
                         >
                           <img
                             className="h-16 w-24 flex-none rounded-md object-cover"
-                            src={t.imageUrl || tourImageUrl(t.title, t.destinationName, "300x200")}
+                            src={t.imageUrl || tourImageUrl(t.title, t.title, "300x200")}
                             alt={t.title}
                           />
                           <div className="flex grow flex-col gap-1 min-w-0">
                             <span className="text-body-bold font-body-bold text-default-font truncate">{t.title}</span>
                             <div className="flex items-center gap-3 text-caption font-caption text-subtext-color">
-                              <span className="inline-flex items-center gap-1"><FeatherMapPin className="text-caption font-caption" /> {t.destinationName}</span>
+                              <span className="inline-flex items-center gap-1"><FeatherMapPin className="text-caption font-caption" /> {t.title}</span>
                               <span className="inline-flex items-center gap-1"><FeatherClock className="text-caption font-caption" /> {t.durationDays}d</span>
                               <span>${Number(t.price).toFixed(2)}</span>
                             </div>
